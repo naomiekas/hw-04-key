@@ -6,7 +6,7 @@ output:
 
 ```{r include = FALSE}
 knitr::opts_chunk$set(
-  eval = FALSE,
+  eval = TRUE,
   out.width = "80%",
   fig.asp = 0.618,
   fig.width = 10,
@@ -122,6 +122,9 @@ college_recent_grads %>%
   mutate(unemployment_rate = percent(unemployment_rate))
 ```
 
+**The majors with the lowest unemployment rates are Math & COmputer Science, Military Technologies, Botany, Soil Science, Ed Admin**
+
+
 ## Which major has the highest percentage of women?
 
 To answer such a question we need to arrange the data in descending order.
@@ -139,6 +142,15 @@ college_recent_grads %>%
 
 1.  Using what you've learned so far, arrange the data in descending order with respect to proportion of women in a major, and display only the major, the total number of people with major, and proportion of women. Show only the top 3 majors by adding `top_n(3)` at the end of the pipeline.
 
+```{r}
+college_recent_grads%>%
+  arrange(desc(sharewomen))%>%
+  select(major, total, sharewomen)%>%
+  top_n(3)
+```
+
+**The top three majors are Early Childhood Education, Communication Disorders, Medical Assisting**
+
 ## How do the distributions of median income compare across major categories?
 
 ```{marginfigure}
@@ -149,6 +161,8 @@ There are three types of incomes reported in this data frame: `p25th`, `median`,
 These correspond to the 25th, 50th, and 75th percentiles of the income distribution of sampled individuals for a given major.
 
 2.  Why do we often choose the median, rather than the mean, to describe the typical income of a group of people?
+
+**We often choose the median because it represents the most common and is less susceptible to outliers**
 
 The question we want to answer "How do the distributions of median income compare across major categories?".
 We need to do a few things to answer this question: First, we need to group the data by `major_category`.
@@ -176,6 +190,18 @@ You might ask yourself: "What would be a meaningful difference in median incomes
 
 3.  Try binwidths of \$1000 and \$5000 and choose one. Explain your reasoning for your choice. Note that the binwidth is an argument for the `geom_histogram` function. So to specify a binwidth of \$1000, you would use `geom_histogram(binwidth = 1000)`.
 
+```{r}
+ggplot(data = college_recent_grads, mapping = aes(x = median)) +
+  geom_histogram(binwidth = 1000)
+```
+
+```{r}
+ggplot(data = college_recent_grads, mapping = aes(x = median)) +
+  geom_histogram(binwidth = 5000)
+```
+
+**I would choose 5000 because it is a bit smoother and allows you to better see the distribution. 1000 was a bit too jagged**
+
 We can also calculate summary statistics for this distribution using the `summarize` function:
 
 ```{r}
@@ -189,27 +215,41 @@ college_recent_grads %>%
 
 4.  Based on the shape of the histogram you created in the previous exercise, determine which of these summary statistics is useful for describing the distribution.
     Write up your description (remember shape, center, spread, any unusual observations) and include the summary statistic output as well.
+    
+    **I would eliminate the max as it is clearly an outlier and there are little values at the min. The mean is likely being pulled because of that max value. The median is probably the best choice.**
 
 5.  Plot the distribution of `median` income using a histogram, faceted by `major_category`.
     Use the `binwidth` you chose in the earlier exercise.
+    
+```{r}
+ggplot(data = college_recent_grads, mapping = aes(x = median)) +
+  geom_histogram(binwidth = 5000) + 
+  facet_wrap(~major_category)
+```
+    
 
 Now that we've seen the shapes of the distributions of median incomes for each major category, we should have a better idea for which summary statistic to use to quantify the typical median income.
 
 6.  Which major category has the highest typical (you'll need to decide what this means) median income? Use the partial code below, filling it in with the appropriate statistic and function. Also note that we are looking for the highest statistic, so make sure to arrange in the correct direction.
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 college_recent_grads %>%
   group_by(major_category) %>%
-  summarize(___ = ___(median)) %>%
-  arrange(___)
+  summarize(med = median(median)) %>%
+  arrange(desc(med))
 ```
+
+**The highest typical median income is engineering**
 
 7.  Which major category is the least popular in this sample? To answer this question we use a new function called `count`, which first groups the data and then counts the number of observations in each category (see below). Add to the pipeline appropriately to arrange the results so that the major with the lowest observations is on top.
 
 ```{r}
 college_recent_grads %>%
-  count(major_category)
+  count(major_category)%>%
+  arrange(n)
 ```
+
+**The least popular major is interdisciplinary**
 
 🧶 ✅ ⬆️ Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards.*
 
@@ -264,11 +304,29 @@ college_recent_grads %>%
 
 8.  Which STEM majors have median salaries equal to or less than the median for all majors' median earnings? Your output should only show the major name and median, 25th percentile, and 75th percentile earning for that major as and should be sorted such that the major with the highest median earning is on top.
 
+```{r}
+college_recent_grads %>%
+  filter(
+    major_type == "stem",
+    median <= 36000)%>%
+  select(major_category, median, p25th, p75th)%>%
+  arrange(desc(median))
+```
+
+
 🧶 ✅ ⬆️ Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards.*
 
 ## What types of majors do women tend to major in?
 
 9.  Create a scatterplot of median income vs. proportion of women in that major, colored by whether the major is in a STEM field or not. Describe the association between these three variables.
+
+```{r}
+college_recent_grads%>%
+  ggplot(aes(x = sharewomen, y = median, color = major_type)) + 
+  geom_point()
+```
+
+**As the share of women increased the median income decreases**
 
 ## Further exploration
 
