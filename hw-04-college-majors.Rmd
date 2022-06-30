@@ -1,11 +1,7 @@
 ---
 title: "HW 04 - What should I major in?"
 output: 
-  tufte::tufte_html:
-    css: ../hw.css
-    tufte_variant: "envisioned"
-    highlight: pygments
-link-citations: yes
+  html_document
 ---
 
 ```{r include = FALSE}
@@ -34,7 +30,7 @@ Keep this in mind as you analyze the data.
 
 # Getting started
 
-Go to the course GitHub organization and locate your homework repo, which should be named `hw-04-college-majors-YOUR_GITHUB_USERNAME`.
+Go to the course GitHub organization and locate your homework repo, which should be named `hw-04-YOUR_GITHUB_USERNAME`.
 Grab the URL of the repo, and clone it in RStudio.
 First, open the R Markdown document `hw-04.Rmd` and Knit it.
 Make sure it compiles without errors.
@@ -51,7 +47,7 @@ Before we introduce the data, let's warm up with some simple exercises.
 
 ## Packages
 
-We'll use the **tidyverse** package for much of the data wrangling and visualisation, the **scales** package for better formatting of labels on visualisations, and the data lives in the **fivethirtyeight** package.
+We'll use the **tidyverse** package for much of the data wrangling and visualization, the **scales** package for better formatting of labels on visualizations, and the data lives in the **fivethirtyeight** package.
 These packages are already installed for you.
 You can load them by running the following in your Console:
 
@@ -180,11 +176,11 @@ You might ask yourself: "What would be a meaningful difference in median incomes
 
 3.  Try binwidths of \$1000 and \$5000 and choose one. Explain your reasoning for your choice. Note that the binwidth is an argument for the `geom_histogram` function. So to specify a binwidth of \$1000, you would use `geom_histogram(binwidth = 1000)`.
 
-We can also calculate summary statistics for this distribution using the `summarise` function:
+We can also calculate summary statistics for this distribution using the `summarize` function:
 
 ```{r}
 college_recent_grads %>%
-  summarise(min = min(median), max = max(median),
+  summarize(min = min(median), max = max(median),
             mean = mean(median), med = median(median),
             sd = sd(median), 
             q1 = quantile(median, probs = 0.25),
@@ -204,7 +200,7 @@ Now that we've seen the shapes of the distributions of median incomes for each m
 ```{r eval=FALSE}
 college_recent_grads %>%
   group_by(major_category) %>%
-  summarise(___ = ___(median)) %>%
+  summarize(___ = ___(median)) %>%
   arrange(___)
 ```
 
@@ -272,7 +268,7 @@ college_recent_grads %>%
 
 ## What types of majors do women tend to major in?
 
-9.  Create a scatterplot of median income vs. proportion of women in that major, coloured by whether the major is in a STEM field or not. Describe the association between these three variables.
+9.  Create a scatterplot of median income vs. proportion of women in that major, colored by whether the major is in a STEM field or not. Describe the association between these three variables.
 
 ## Further exploration
 
